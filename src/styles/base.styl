@@ -1,0 +1,131 @@
+
+*
+	box-sizing content-box
+	-webkit-font-smoothing antialiased
+
+img
+	
+	width 100%
+
+/*CSS Aimations*/
+
+ease-out-quad = cubic-bezier(0.250, 0.460, 0.450, 0.940)
+
+/*Colors*/
+
+baseblack = #000000
+basewhite = #ffffff
+baseblue = #2274ac
+basenavy = #153c5c
+
+/*General Utils*/
+
+backgroundImg(src)
+
+	background-image url(src)
+	background-size 100%
+	background-repeat no-repeat
+
+
+backgroundCover()
+
+	background-size cover
+	background-repeat no-repeat
+	background-position center
+	
+verticalCenter()
+	
+	position relative
+	top 50%
+	transform translateY(-50%)
+
+/*General Elements*/
+
+.btn--circular
+	
+	position relative
+
+	margin 4% auto 0
+
+	width 60%
+	max-width 220px
+	min-width 100px
+	height 55px
+	
+	border-radius 50px
+	background-color basewhite
+	
+	font-family headBold
+	font-size 15px
+	color basenavy
+	
+	cursor pointer
+	
+	overflow hidden
+
+	+q-medium()
+	
+		width 52%
+		height 45px
+		
+
+	&:after
+		
+		content ''
+		position absolute
+		
+		margin-top 4px
+
+		width 10px
+		height 20px
+		
+		right -10%
+		
+		backgroundImg('../assets/img/arrow--btn.svg')
+		
+		transition all 250ms ease-out-quad			
+
+		+q-medium()
+	
+			display none
+			
+			
+.btn--circular:hover 
+	
+	&:after
+		
+		right 15%
+
+.btn--circular__inner
+	
+	position relative
+
+	text-align center
+	margin 0 auto
+	verticalCenter()
+	
+	left 0
+	
+	transition all 250ms ease-out-quad
+	
+	.btn--circular:hover &
+		
+		left -10%
+		
+	+q-medium()
+	
+		transition none
+		
+		.btn--circular:hover &
+		
+			left 0
+
+
+#planets
+
+	width 100%
+	height 100%
+	position absolute
+	
+	background-color black
+
