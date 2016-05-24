@@ -1,6 +1,5 @@
 var PIXI = require('pixi');
 
-
 var Spirograph = function  () {
 
 	var renderer;
@@ -81,8 +80,6 @@ var Spirograph = function  () {
     _this.velocity = [0, 0];
     _this.acceleration = [0, 0];
 
-
-
     // Funciones del objeto particula
 
     _this.applyForce = function ( force ) {
@@ -128,7 +125,6 @@ var Spirograph = function  () {
     }
 
     return _this;
-
   }
 
 	function animate() {
