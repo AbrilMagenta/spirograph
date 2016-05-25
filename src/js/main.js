@@ -1,7 +1,5 @@
 var $ = require('jquery');
 
 var Spirograph = require('./spirograph');
-
-
-
-	var spirograph = new Spirograph();
+var spirograph = new Spirograph();
+spirograph.init();

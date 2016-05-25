@@ -1,4 +1,9 @@
-var PIXI = require('pixi');
+var PIXI = require("pixi");
+var Particle = require("./Particle");
+var Attractor = require("./Attractor");
+
+// As learned in The nature of code by Daniel Shiffman
+// by Abril Alvarez
 
 var Spirograph = function  () {
 
@@ -6,143 +11,115 @@ var Spirograph = function  () {
 	var rendererElement;
 
 	var stage;
-	var graphics;
+
+  // Window Values
 
   var width = window.innerWidth;
   var height = window.innerHeight;
 
   // Values of the spirograph
-  var sections = 7;
 
-  var R = 100;
-  var r = R / sections;
-  var k = r / R;
-  var l = R / r;
-  var t = 0;
+  var sections = 8;
+  var attractors = [];
 
 
+  // Values of particles 
 
-  var totalElements = 1000;
+  var totalParticles = 1000;
+  var totalAttractors = 1000;
+  var particleslocation;
   var particles = [];
+
+  // Values of forces
 
   var wind;
   var gravity;
+  var friction = [];
+  function init () {
 
-	createStage();
-  // createAtractors();
-	animate();
+    createStage();
+    createAtractors();
+    animate();
+
+  }
 
 	function createStage () {
 		
-		renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight);
+  	renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight);
 		renderElement = document.body.appendChild(renderer.view);
 		renderElement.setAttribute("id", "spirograph");
     
     stage = new PIXI.Stage();
 
-      for (var i = 0; i < totalElements; i++) {
+    var p = null;
 
-        var p = createParticle([((Math.random() * width) + 0), ((Math.random() * height) + 0)]);
-        stage.addChild(p);
-        particles.push(p);
-      }
+    for (var i = 0; i < totalParticles; i++) {
+
+      p = new Particle([((Math.random() * width) + 0), ((Math.random() * height) + 0)] );
+      stage.addChild(p.element);
+      particles.push(p);
+
+    }
   }
 
   function createAtractors() {
-        
-    var atractorsPosition = [];
-    var density = 400;
-    var newX = null;
-    var newY = null;
 
-    for (var i = 0; i < density; i++) {
+    for (var i = 0; i < totalAttractors; i++) {
 
-      newX = R * ((1-k) * Math.cos(i) + l * k * Math.cos( (1-k) / k * i)) + (width / 2);
-      newY = R * ((1-k) * Math.sin(i) - l * k * Math.sin( (1-k) / k * i)) + (height / 2);
+      attractors.push( new Attractor(i, sections));
 
-      // Posiciones ancla
-      atractorsPosition.push([newX, newY]);
     }
   }  
 
-  function createParticle ( location ) {
+  function createFriction ( velocity ) {
+  	
+  	var c = 0.01;
+  	var normal = 4;
+  	var frictionMag = c * normal;
 
-    var _this = new PIXI.Graphics();
+  	friction = [velocity[0] * (-1), velocity[1] * (-1)];
+		friction = [friction[0] * frictionMag, friction[1] * frictionMag];
 
-    // Declaraciones para el objeto de Pixi
-    _this.radius = (Math.random() * 3) + 0.5;
-    _this.beginFill(0xFFFFFF, 1);
-    _this.drawCircle(0, 0, _this.radius);
-
-    // Magnitudes
-    _this.mass = [_this.radius, _this.radius];
-    _this.location = location;
-    _this.velocity = [0, 0];
-    _this.acceleration = [0, 0];
-
-    // Funciones del objeto particula
-
-    _this.applyForce = function ( force ) {
-      
-      var f = [(force[0] / _this.mass[0]), (force[1] / _this.mass[1])];
-      _this.acceleration = [(_this.acceleration[0] + f[0]), (_this.acceleration[1] + f[1])];
-    }
-
-    _this.update = function () {
-      
-      _this.velocity = [(_this.velocity[0] + _this.acceleration[0]), (_this.velocity[1] + _this.acceleration[1])];
-      _this.location = [(_this.location[0] + _this.velocity[0]), (_this.location[1] + _this.velocity[1])];
-      _this.acceleration = [0, 0];
-
-    }
-
-    _this.display = function () {
-        
-      _this.position.x = _this.location[0];
-      _this.position.y = _this.location[1];
-
-    }
-
-    _this.checkEdges = function () {
-      
-      if (_this.location[0] > width) {
-
-        _this.location[0] = width;
-        _this.velocity[0] *= -1;
-
-      } else if (_this.location[0] < 0) {
-
-        _this._velocity[0] *= -1;
-        _this.location[0] = 0;
-
-      }
- 
-      if (_this.location[1] > height) {
-      
-        _this.velocity[1] *= -1;
-        _this.location[1] = height;
-      }
-    }
-
-    return _this;
+ 		return friction;
   }
 
 	function animate() {
 
-    wind = [0.01, 0];
+
+
+		wind = [0.01, 0];
     gravity = [0, 0.1];
 
-    for (var i = 0; i < totalElements; i++) {
+    var attractForce;
+    var friction;
 
-      // particles[i].applyForce(wind);
-      particles[i].applyForce(gravity);
+    for (var i = 0; i < totalParticles; i++) {
+
+    	friction = createFriction(particles[i].velocity);
+
+
+    	attractForce = attractors[i].attract(particles[i]);
+    	particles[i].applyForce(attractForce);
+    	particles[i].applyForce(friction);
+
+			// particles[i].applyForce(wind);
+			// particles[i].applyForce(gravity);
+			
       particles[i].update();
       particles[i].display();
       particles[i].checkEdges();
 
+
     }
+
     renderer.render(stage);
     requestAnimationFrame(animate);
+	}
+
+	return {
+
+		init: init
+
 	}
 }
 
