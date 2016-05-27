@@ -8,7 +8,7 @@ function Particle ( initLocation ) {
 
   // Declaraciones para el objeto de Pixi
 
-  var radius = (Math.random() * 5) + 0.5;
+  var radius = (Math.random() * 3) + 0.5;
   var _element = new PIXI.Graphics();
   _element.beginFill(0xFFFFFF, 1);
   _element.drawCircle(0, 0, radius);
@@ -17,7 +17,7 @@ function Particle ( initLocation ) {
   // Essential Rule, acceleration is equal to acceleration plus force
   // Velocity is equal to velocity plus acceleration
   // New position is equal to velocity
-  var mass = [radius, radius];
+  var mass = radius;
   var location = initLocation;
   var velocity = [0, 0];
   var acceleration = [0, 0];
@@ -27,7 +27,7 @@ function Particle ( initLocation ) {
   // Funciones del objeto particula
   function _applyForce ( force ) {
     
-    var f = [(force[0] / mass[0]), (force[1] / mass[1])];
+    var f = [(force[0] / mass), (force[1] / mass)];
     acceleration = [(acceleration[0] + f[0]), (acceleration[1] + f[1])];
 
   }
@@ -40,6 +40,7 @@ function Particle ( initLocation ) {
     acceleration = [0, 0];
     this.location = location;
     this.velocity = velocity;
+
   }
 
   function _display () {
@@ -67,6 +68,12 @@ function Particle ( initLocation ) {
       
       velocity[1] *= -1;
       location[1] = height;
+
+    } else if (location[1] < 0) {
+      
+      velocity[1] *= -1;
+      location[1] = 0;
+
     }
   }
 

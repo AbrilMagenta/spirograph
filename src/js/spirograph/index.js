@@ -1,17 +1,18 @@
 var PIXI = require("pixi");
 var Particle = require("./Particle");
 var Attractor = require("./Attractor");
+var Repeller = require("./Repeller");
 
 // As learned in The nature of code by Daniel Shiffman
 // by Abril Alvarez
-
 var Spirograph = function  () {
 
 	var renderer;
 	var rendererElement;
 
 	var stage;
-
+	var body = document.querySelector("body");
+	
   // Window Values
 
   var width = window.innerWidth;
@@ -19,101 +20,129 @@ var Spirograph = function  () {
 
   // Values of the spirograph
 
-  var sections = 8;
-  var attractors = [];
+  var sectionCount = 10;
 
+  var mouseElement;
 
-  // Values of particles 
+	// Values of particles 
 
-  var totalParticles = 1000;
-  var totalAttractors = 1000;
+  var totalParticles = 1100;
+  var totalAttractors = 1100;
   var particleslocation;
+
+  var attractors = [];
   var particles = [];
+
+  var newSectionCount;
 
   // Values of forces
 
-  var wind;
-  var gravity;
   var friction = [];
+  var tick = 1;
+
   function init () {
 
     createStage();
+    createParticles();
     createAtractors();
     animate();
 
+    mouseElement = new Repeller();
+  
+  	body.addEventListener("click", mouseClick, false);
+  	body.addEventListener("mousemove", mouseMove, false);
   }
+
+  // Creating Elements
 
 	function createStage () {
 		
-  	renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight);
+  	renderer = PIXI.autoDetectRenderer(width, height);
 		renderElement = document.body.appendChild(renderer.view);
 		renderElement.setAttribute("id", "spirograph");
-    
+
     stage = new PIXI.Stage();
 
+  }
+
+  function createParticles() {
+  	
     var p = null;
 
-    for (var i = 0; i < totalParticles; i++) {
+	  for (var i = 0; i < totalParticles; i++) {
 
-      p = new Particle([((Math.random() * width) + 0), ((Math.random() * height) + 0)] );
-      stage.addChild(p.element);
-      particles.push(p);
+	    p = new Particle([ ((Math.random() * width) + 0), ((Math.random() * height) + 0) ] );
+	    stage.addChild(p.element);
+	    particles.push(p);
 
-    }
+	  }
   }
 
   function createAtractors() {
 
-    for (var i = 0; i < totalAttractors; i++) {
+	  for (var i = 0; i < totalAttractors; i++) {
 
-      attractors.push( new Attractor(i, sections));
+	    attractors.push( new Attractor( 100 ) );
+	    attractors[i].createLocation( i, sectionCount );
 
-    }
-  }  
+	  }
+ 	}
+
+ 	// Events
+
+  function mouseClick(e) {
+
+
+  	newSectionCount = Math.floor((Math.random() * 10) + 3);
+
+	  for (var i = 0; i < totalParticles; i++) {
+
+	  	attractors[i].createLocation(i, newSectionCount);
+
+	  }
+
+	}
+
+  function mouseMove( e ) {
+		
+		mouseElement.setNewLocation(e.x, e.y);
+
+	  for (var i = 0; i < totalParticles; i++) {
+
+	    particles[i].applyForce( mouseElement.repell(particles[i]) );
+
+	  }
+  }
+
+  // Create Other Forces
 
   function createFriction ( velocity ) {
-  	
-  	var c = 0.01;
-  	var normal = 4;
-  	var frictionMag = c * normal;
+	  	
+	  var c = 0.01;
+	  var normal = 9;
 
-  	friction = [velocity[0] * (-1), velocity[1] * (-1)];
-		friction = [friction[0] * frictionMag, friction[1] * frictionMag];
+	  friction = [velocity[0] * (-1), velocity[1] * (-1)];
+		friction = [friction[0] * (c * normal), friction[1] * (c * normal)];
 
- 		return friction;
-  }
+	 	return friction;
+	}
 
 	function animate() {
 
+	  for (var i = 0; i < totalParticles; i++) {
 
+			particles[i].applyForce( createFriction(particles[i].velocity) );
+	    particles[i].applyForce( attractors[i].attract( particles[i]) );
 
-		wind = [0.01, 0];
-    gravity = [0, 0.1];
+			particles[i].update();
+	    particles[i].display();
+	    particles[i].checkEdges();
 
-    var attractForce;
-    var friction;
-
-    for (var i = 0; i < totalParticles; i++) {
-
-    	friction = createFriction(particles[i].velocity);
-
-
-    	attractForce = attractors[i].attract(particles[i]);
-    	particles[i].applyForce(attractForce);
-    	particles[i].applyForce(friction);
-
-			// particles[i].applyForce(wind);
-			// particles[i].applyForce(gravity);
-			
-      particles[i].update();
-      particles[i].display();
-      particles[i].checkEdges();
-
-
-    }
+	  }
 
     renderer.render(stage);
     requestAnimationFrame(animate);
+	
 	}
 
 	return {
