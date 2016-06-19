@@ -18,12 +18,14 @@ var Summer = function  () {
 	var width = window.innerWidth;
 	var height = window.innerHeight;
 
+	var ratio = width / height;
+
 	// Values of the spirograph
 
   	var mouseElement;
 
 	// Values of flowers
-		var allRows = [];
+	var allRows = [];
   	var row;
   	var rows = [];
   	var flowersPerRow = Math.floor((Math.random() * 30) + 10);
@@ -47,10 +49,23 @@ var Summer = function  () {
   	var flowerImages = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   	var flowerImagesUsed = [];
 
+	shuffleFlowers(flowerImages);
 
-		shuffleFlowers(flowerImages);
 
-		function init () {
+	window.onresize = function (event){
+
+		console.log(ratio);
+	    var width = window.innerWidth;
+	    var height = window.innerHeight;
+
+	    //this part resizes the canvas but keeps ratio the same
+	    renderer.view.style.width = width + "px";
+	    renderer.view.style.height = width / ratio  + "px";
+
+	    //this part adjusts the ratio:
+	    renderer.resize(width,height);
+	}
+	function init () {
 
 	   createStage();
 		 createRows();
@@ -70,6 +85,8 @@ var Summer = function  () {
 		renderElement.setAttribute("id", "summer");
 		stage = new PIXI.Stage();
 
+
+
 	}
 
   function createRow(rowIndex) {
@@ -82,7 +99,7 @@ var Summer = function  () {
 	  		row.createLocations(rowsRadiusStart + (rowIndex * rowsRadiusStart), angle)
 	  		rows.push(row);
 
-				angle += 2 * Math.PI / flowersPerRow;
+			angle += 2 * Math.PI / flowersPerRow;
 
 		}
   }
@@ -116,7 +133,7 @@ var Summer = function  () {
 
   		}
 				
-			flower = new Flower([ ((Math.random() * -width) + width), ((Math.random() * height) + 0) ], minimalSize + flowerP, setflowerArray[flowerP]);
+			flower = new Flower([ width / 2, height / 2 ], minimalSize + flowerP, setflowerArray[flowerP]);
 
 			stage.addChild(flower.element);
   		flowers.push(flower);
@@ -180,7 +197,7 @@ function mouseClick(e) {
 	 function createFriction ( velocity ) {
 		  	
 		 var c = 0.01;
-		 var normal = 5;
+		 var normal = 3;
 
 		friction = [velocity[0] * (-1), velocity[1] * (-1)];
 		friction = [friction[0] * (c * normal), friction[1] * (c * normal)];
@@ -190,12 +207,14 @@ function mouseClick(e) {
 
 	function animate() {
 
+				renderer.resize(width, height);
+
 	  for (var i = 0; i < totalFlower; i++) {
 
-			flowers[i].applyForce( createFriction(flowers[i].velocity) );
+		flowers[i].applyForce( createFriction(flowers[i].velocity) );
 	    flowers[i].applyForce( rows[i].attract( flowers[i]) );
 
-			flowers[i].update();
+		flowers[i].update();
 	    flowers[i].display();
 	    flowers[i].checkEdges();
 
@@ -203,6 +222,8 @@ function mouseClick(e) {
 
     renderer.render(stage);
     requestAnimationFrame(animate);
+
+
 	
 	}
 

@@ -59,29 +59,29 @@ function Flower ( initLocation, newRange, image ) {
 
   function _checkEdges () {
      
-    if (location[0] > width) {
+    // if (location[0] > width) {
 
-      location[0] = width;
-      velocity[0] *= -1;
+    //   location[0] = width;
+    //   velocity[0] *= -1;
 
-    } else if (location[0] < 0) {
+    // } else if (location[0] < 0) {
 
-      velocity[0] *= -1;
-      location[0] = 0;
+    //   velocity[0] *= -1;
+    //   location[0] = 0;
 
-    }
+    // }
  
-    if (location[1] > height) {
+    // if (location[1] > height) {
       
-      velocity[1] *= -1;
-      location[1] = height;
+    //   velocity[1] *= -1;
+    //   location[1] = height;
 
-    } else if (location[1] < 0) {
+    // } else if (location[1] < 0) {
       
-      velocity[1] *= -1;
-      location[1] = 0;
+    //   velocity[1] *= -1;
+    //   location[1] = 0;
 
-    }
+    // }
   }
 
   return {

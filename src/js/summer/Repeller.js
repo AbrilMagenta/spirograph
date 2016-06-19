@@ -4,7 +4,7 @@ function Repeller () {
 	var width = window.innerWidth;
   	var height = window.innerHeight;
 
-  	var strenght = 800;
+  	var strenght = 500;
 	this.location = [];
 
 	function _setNewLocation ( x, y ) {
