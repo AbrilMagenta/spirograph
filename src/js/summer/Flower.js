@@ -1,28 +1,35 @@
 var PIXI = require('pixi');
 
-function Particle ( initLocation ) {
+function Flower ( initLocation, newRange, image ) {
 
   // Window Values
   var width = window.innerWidth;
   var height = window.innerHeight;
+  var texture = PIXI.Texture.fromImage("assets/img/flowers/flower0" + image +".png");
 
   // Declaraciones para el objeto de Pixi
+  var radius = newRange;
+  var _element = new PIXI.Sprite(texture);
 
-  var radius = (Math.random() * 2) + 0.5;
-  var _element = new PIXI.Graphics();
-  _element.beginFill(0xFFFFFF, 1);
-  _element.drawCircle(0, 0, radius);
+  _element.anchor.x = 0.5;
+  _element.anchor.y = 0.5;
+  _element.position.x = initLocation[0];
+  _element.position.y = initLocation[1];
+
+  _element.width = radius * 50;
+  _element.height = radius * 50;
 
   // Physic Properties
   // Essential Rule, acceleration is equal to acceleration plus force
   // Velocity is equal to velocity plus acceleration
   // New position is equal to velocity
-  var mass = radius;
+  var mass = 2;
   var location = initLocation;
   var velocity = [0, 0];
   var acceleration = [0, 0];
   this.location = location;
   this.velocity = [];
+
 
   // Funciones del objeto particula
   function _applyForce ( force ) {
@@ -90,4 +97,4 @@ function Particle ( initLocation ) {
   }
 }
 
-module.exports = Particle;
+module.exports = Flower;

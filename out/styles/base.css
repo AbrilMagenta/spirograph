@@ -8,6 +8,9 @@ img {
 /*CSS Aimations*/
 /*Colors*/
 /*General Utils*/
+body {
+  background-color: #6624fb;
+}
 /*General Elements*/
 .btn--circular {
   position: relative;

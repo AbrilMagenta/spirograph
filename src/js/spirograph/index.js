@@ -13,72 +13,72 @@ var Spirograph = function  () {
 	var stage;
 	var body = document.querySelector("body");
 	
-  // Window Values
+	// Window Values
 
-  var width = window.innerWidth;
-  var height = window.innerHeight;
+	var width = window.innerWidth;
+	var height = window.innerHeight;
 
-  // Values of the spirograph
+	// Values of the spirograph
 
-  var sectionCount = 10;
+  	var sectionCount = 10;
 
-  var mouseElement;
+  	var mouseElement;
 
 	// Values of particles 
 
-  var totalParticles = 1100;
-  var totalAttractors = 1100;
-  var particleslocation;
+  	var totalParticles = 1100;
+  	var totalAttractors = 1100;
+  	var particleslocation;
 
-  var attractors = [];
-  var particles = [];
+  	var attractors = [];
+  	var particles = [];
 
-  var newSectionCount;
+  	var newSectionCount;
 
-  // Values of forces
+  	// Values of forces
 
-  var friction = [];
-  var tick = 1;
+  	var friction = [];
+  	var tick = 1;
 
-  function init () {
+	function init () {
 
-    createStage();
-    createParticles();
-    createAtractors();
-    animate();
+	   createStage();
+	   createParticles();
+	   createAtractors();
+	   animate();
 
-    mouseElement = new Repeller();
-  
-  	body.addEventListener("click", mouseClick, false);
-  	body.addEventListener("mousemove", mouseMove, false);
-  }
+	   mouseElement = new Repeller();
+	  
+	   body.addEventListener("click", mouseClick, false);
+	   body.addEventListener("mousemove", mouseMove, false);
+	}
 
   // Creating Elements
 
 	function createStage () {
 		
-  	renderer = PIXI.autoDetectRenderer(width, height);
+  		renderer = PIXI.autoDetectRenderer(width, height);
 		renderElement = document.body.appendChild(renderer.view);
 		renderElement.setAttribute("id", "spirograph");
 
-    stage = new PIXI.Stage();
+    	stage = new PIXI.Stage();
 
-  }
+  	}
 
-  function createParticles() {
+  	function createParticles() {
   	
-    var p = null;
+    	var p = null;
 
-	  for (var i = 0; i < totalParticles; i++) {
+		for (var i = 0; i < totalParticles; i++) {
 
-	    p = new Particle([ ((Math.random() * width) + 0), ((Math.random() * height) + 0) ] );
-	    stage.addChild(p.element);
-	    particles.push(p);
+		   p = new Particle([ ((Math.random() * width) + 0), ((Math.random() * height) + 0) ] );
+		   stage.addChild(p.element);
+		   particles.push(p);
 
-	  }
-  }
+		}
+  	}
 
-  function createAtractors() {
+  	function createAtractors() {
 
 	  for (var i = 0; i < totalAttractors; i++) {
 
@@ -119,7 +119,7 @@ var Spirograph = function  () {
   function createFriction ( velocity ) {
 	  	
 	  var c = 0.01;
-	  var normal = 9;
+	  var normal = 10;
 
 	  friction = [velocity[0] * (-1), velocity[1] * (-1)];
 		friction = [friction[0] * (c * normal), friction[1] * (c * normal)];
@@ -131,10 +131,10 @@ var Spirograph = function  () {
 
 	  for (var i = 0; i < totalParticles; i++) {
 
-			particles[i].applyForce( createFriction(particles[i].velocity) );
+		particles[i].applyForce( createFriction(particles[i].velocity) );
 	    particles[i].applyForce( attractors[i].attract( particles[i]) );
 
-			particles[i].update();
+		particles[i].update();
 	    particles[i].display();
 	    particles[i].checkEdges();
 

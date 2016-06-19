@@ -41,6 +41,9 @@
 img {
   width: 100%;
 }
+body {
+  background-color: #6624fb;
+}
 .btn--circular {
   position: relative;
   margin: 4% auto 0;
