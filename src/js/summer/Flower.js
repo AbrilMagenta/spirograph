@@ -23,7 +23,7 @@ function Flower ( initLocation, newRange, image ) {
   // Essential Rule, acceleration is equal to acceleration plus force
   // Velocity is equal to velocity plus acceleration
   // New position is equal to velocity
-  var mass = 2;
+  var mass = 1;
   var location = initLocation;
   var velocity = [0, 0];
   var acceleration = [0, 0];
