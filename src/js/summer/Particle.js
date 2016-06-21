@@ -13,6 +13,9 @@ function Particle ( initLocation ) {
   _element.beginFill(0xFFFFFF, 1);
   _element.drawCircle(0, 0, radius);
 
+
+  _element.tint = Math.random() * 0xFFFFFF;
+
   // Physic Properties
   // Essential Rule, acceleration is equal to acceleration plus force
   // Velocity is equal to velocity plus acceleration

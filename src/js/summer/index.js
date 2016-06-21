@@ -14,41 +14,42 @@ var Summer = function  () {
 	var body = document.querySelector("body");
 	
 	// Window Values
-
 	var width = window.innerWidth;
 	var height = window.innerHeight;
-
 	var ratio = width / height;
 
 	// Values of the spirograph
 	var newAngle = 0;
-  	var mouseElement;
+  var mouseElement;
 
 	// Values of flowers
 	var allRows = [];
-  	var row;
-  	var rows = [];
-  	var flowersPerRow = Math.floor((Math.random() * 30) + 10);
-  	var totalRows = Math.floor((Math.random() * 4) + 3);
-  	var totalFlower = totalRows * flowersPerRow; 
-  	var rowsRadiusStart = 160;
+	var rows = [];
+  var row;
 
-  	var flower;
-  	var flowers = [];
+  var flowersPerRow = Math.floor((Math.random() * 30) + 10);
+  var totalRows = Math.floor((Math.random() * 4) + 3);
 
+  var rowsRadiusStart = 160;
 
+  var flower;
+  var flowers = [];
+  var flowerTextures = [];
+  var flowerSizes = [];
 
+  var totalFlower = totalRows * flowersPerRow; 
+  var lastTotalFlowers = totalFlower;
 
-  	var minimalSize = 0.5;
-  	var lastMinSize = 0.5;
+	var minimalSize = 0.5;
+  var lastMinSize = 0.5;
 
-  	// Values of forces
+  // Values of forces
 
-  	var friction = [];
-  	var tick = 1;
+  var friction = [];
+  var tick = 1;
 
-  	var flowerImages = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-  	var flowerImagesUsed = [];
+  var flowerImages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  var flowerImagesUsed = [];
 
 	shuffleFlowers(flowerImages);
 
@@ -57,35 +58,24 @@ var Summer = function  () {
 
 		width = window.innerWidth;
 		height = window.innerHeight;
-	    // if (window.innerWidth / window.innerHeight >= ratio) {
-
-	    //     var w = window.innerHeight * ratio;
-	    //     var h = window.innerHeight;
-
-	    // } else {
-	    	
-	    //     var w = window.innerWidth;
-	    //     var h = window.innerWidth / ratio;
-	    // }
-
-	    // renderer.view.style.width = w ;
-	    // renderer.view.style.height = h;
-
-	    renderer.resize(width, height);
-
+		renderer.resize(width, height);
+		
 	}
-
 
 	function init () {
 
-	   createStage();
-		 createRows();
-		 animate();
+	  createStage();
+		createRows();
 
-		 mouseElement = new Repeller();
-	   body.addEventListener("click", mouseClick, false);
-	   body.addEventListener("mousemove", mouseMove, false);
-		}
+		for (var i = 0; i < totalFlower; i++) {
+			createFlowers(i);
+  	}
+		animate();
+
+		mouseElement = new Repeller();
+	  body.addEventListener("click", mouseClick, true);
+
+	}
 
   // Creating Elements
 
@@ -95,41 +85,35 @@ var Summer = function  () {
 		renderElement = document.body.appendChild(renderer.view);
 		renderElement.setAttribute("id", "summer");
 		stage = new PIXI.Stage();
-
-
-
 	}
-
-  function createRow(rowIndex) {
-  		
-  			var angle = 0;
-
-			 for (var i = 0; i < flowersPerRow; i++) {
-		  	
- 		  	row = new Row(i);
-	  		row.createLocations(rowsRadiusStart + (rowIndex * (rowsRadiusStart - 30)), angle)
-	  		rows.push(row);
-
-			angle += 2 * Math.PI / flowersPerRow;
-
-		}
-  }
 
   function createRows() {
 			
 		for (var m = 1; m < totalRows + 1; m++) {
 
 	 		minimalSize = lastMinSize;
-
-	 		allRows.push(createRow(m));
-			createFlower(sortFlowers());
-
+			allRows.push(createRow(m));
+	 		createFlowerTexture(sortFlowers());
 			lastMinSize = 0.7 * m;
 		}
 	}
 
-  function createFlower(setflowerArray) {
+  function createRow(rowIndex) {
+  		
+  	var angle = 0;
 
+		for (var i = 0; i < flowersPerRow; i++) {
+		  	
+ 		  row = new Row(i);
+	  	row.createLocations(rowsRadiusStart + (rowIndex * (rowsRadiusStart - 30)), angle)
+	  	rows.push(row);
+
+			angle += 2 * Math.PI / flowersPerRow;
+		}
+  }
+
+  function createFlowerTexture(setflowerArray) {
+  	
    	var flowerP = null;
 
   	for (var i = 0; i < flowersPerRow; i++) {
@@ -143,12 +127,19 @@ var Summer = function  () {
   			flowerP = flowerP + 1;
 
   		}
-				
-			flower = new Flower([ width / 2, height / 2 ], minimalSize + flowerP, setflowerArray[flowerP]);
-
-			stage.addChild(flower.element);
-  		flowers.push(flower);
+			
+			flowerSizes.push(minimalSize + flowerP);
+			flowerTextures.push(setflowerArray[flowerP]);
 		}
+  }
+
+
+  function createFlowers(index) {
+		
+		flower = new Flower([ width / 2, height / 2 ], flowerSizes[index], flowerTextures[index]);
+		stage.addChild(flower.element);
+  	flowers.push(flower);
+
 	 }
 
   function sortFlowers() {
@@ -170,35 +161,9 @@ var Summer = function  () {
 		return newflowerArray;
   }
 
-function mouseClick(e) {
-
-  	flowersPerRow = Math.floor((Math.random() * 30) + 10);
-  	totalRows = Math.floor((Math.random() * 4) + 3);
-  	totalFlower = totalRows * flowersPerRow; 
-
-  	minimalSize = 0.5;
-  	lastMinSize = 0.5;
-
-  	allRows = [];
-  	rows = [];
-
-	for (var m = 1; m < totalRows + 1; m++) {
-
-	 		minimalSize = lastMinSize;
-
-	 		allRows.push(createRow(m));
-			// createFlower(sortFlowers());
-
-			lastMinSize = 0.7 * m;
-		}
-
-
-
-}
-
-function shuffleFlowers(a) {
+	function shuffleFlowers(a) {
 	
-	var j, x, i;
+		var j, x, i;
 	    for (i = a.length; i; i -= 1) {
 	        j = Math.floor(Math.random() * i);
 	        x = a[i - 1];
@@ -207,17 +172,57 @@ function shuffleFlowers(a) {
 	    }
 	}
 
-	function updateRows () {
-		
+
+function mouseClick(e) {
+
+  	minimalSize = 0.5;
+  	lastMinSize = 0.5;
+
+  	flowersPerRow = Math.floor((Math.random() * 30) + 10);
+  	totalRows = Math.floor((Math.random() * 4) + 3);
+  	totalFlower = totalRows * flowersPerRow; 
+
+		allRows = [];
+  	rows = [];
+  	flowerTextures = [];
+  	flowerSizes = [];
+
+  	createRows();
+
+  	if (totalFlower >= lastTotalFlowers) {
+
+  		for (var i = 0; i < totalFlower - lastTotalFlowers; i++) {
+ 
+  			createFlowers(i);
+
+  		}
+
+  	} else {
+
+  		var totalToRemove = lastTotalFlowers - totalFlower;
+
+  		for (var w = 0; w < totalToRemove; w++) {
+
+  			stage.removeChild(flowers[(lastTotalFlowers - 1) - w].element);
+  		
+  		}
+
+  		flowers.splice(flowers.length - totalToRemove, totalToRemove );
+  
+  	}
 
 
+  	for (var n = 0; n < flowerTextures.length; n++) {
+
+  		flowers[n].addTexture(flowerTextures[n], flowerSizes[n]);
+  	}
 
 
+  	lastTotalFlowers = totalFlower;
+	
 	}
 
-
-
-  	function mouseMove( e ) {
+	function mouseMove( e ) {
 		
 		mouseElement.setNewLocation(e.x, e.y);
 
@@ -247,15 +252,13 @@ function shuffleFlowers(a) {
 
 	  for (var i = 0; i < totalFlower; i++) {
 
-		flowers[i].applyForce( createFriction(flowers[i].velocity) );
+			flowers[i].applyForce( createFriction(flowers[i].velocity) );
 	    flowers[i].applyForce( rows[i].attract( flowers[i]) );
+			
+			rows[i].rotate(newAngle);
 
-
-	    rows[i].rotate(newAngle);
-
-		flowers[i].update();
+			flowers[i].update();
 	    flowers[i].display();
-	    flowers[i].checkEdges();
 	  }
 
 	  newAngle += -0.001;
