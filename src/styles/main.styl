@@ -4,15 +4,204 @@
 
 /*MODULES*/
 
-.invitation-overlay {
+body
+	
+	overflow hidden
+
+#summer
+	
+	position absolute
+	top 50%
+	left 50%
+		
+	transform translate(-50%, -50%)
+
+.invitation-logo
+	
+	position relative
+
+	width 60px
+	margin 0 auto 20px	
+	opacity 0
+	transform translateY(50%)
+
+	+q-medium()
+	
+		width 40px
+
+.invitation-overlay 
 
 	position absolute
 	width 100%
 	height 100%
 	
-	background-color #7C23C9
+	z-index 1
+
+	&:before 
+		
+		content ""
+		position absolute
+		
+		width 100%
+		height 100%
+		
+		background-color #7C23C9
+		opacity 0.75
+
+.invitation-text
 	
-	opacity 0.75
+	position relative
+	top 50%
+	margin 0 auto
+	
+	width 70%
+	max-width 680px
+	
+	transform translateY(-50%)
+	
+	+q-v-large()
+		
+		width 90%
+	
+	h4
+		position relative
 
-}
+		margin 0 auto
 
+		width 61%
+			
+		font-family 'Raleway'
+		font-size 13px
+		color white
+		font-weight 700
+		letter-spacing 4px
+		line-height 2.3
+
+		text-transform uppercase
+		text-align center
+		
+		opacity 0
+		
+		transform translateY(50%)
+		
+		+q-large()
+		
+			width 90%
+			letter-spacing 2px
+			line-height 2
+			
+		+q-medium()
+			
+			letter-spacing 1px
+
+	h2
+		position relative
+		margin-top 5%
+
+		font-family 'Raleway'
+		font-size 68px
+		color white
+		font-weight 600
+
+		text-align center
+		
+		transform translateY(30%)
+		
+		opacity 0
+
+		+q-v-large()
+		
+			font-size 55px
+			
+		+q-large()
+			
+			font-size 30px
+			
+		+q-medium()
+
+			font-size 25px
+	p
+		
+		margin 45px auto 0
+		
+		width 80%
+	
+		font-family 'Raleway'
+		font-size 15px
+		color white
+		font-weight 400
+		line-height 1.6
+
+		text-align center
+		
+		transform translateY(20%)
+		
+		opacity 0
+
+		+q-large()
+		
+			width 90%
+			font-size 13px
+
+	span
+		
+		font-weight 600
+
+		
+.invitation-lines
+	
+	position relative
+	width 100%
+	margin-top 13px
+	
+	opacity 0
+	
+.invitation-line
+	
+	width 51%
+	height 20px
+	overflow hidden
+	
+.invitation-line__inner
+	position relative
+	top 6px
+	width 100%
+	height 1px
+	background-color #ffffff
+
+.invitation-line__circle
+	
+	position absolute
+	top 0
+
+	width 10px
+	height 10px
+	border 2px solid #ffffff
+	border-radius 50%
+
+	
+.invitation-line-one
+	position absolute
+	left 0
+	top 0
+	
+	.invitation-line__inner
+		
+		transform translateX(50%)
+
+	.invitation-line__circle
+		right 50%
+	
+.invitation-line-two
+	position absolute
+	top 0
+	right 0
+
+	.invitation-line__inner
+		
+		transform translateX(-50%)
+	
+	.invitation-line__circle
+		right 50%
+
+	

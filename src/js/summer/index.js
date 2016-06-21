@@ -1,4 +1,7 @@
 var PIXI = require("pixi");
+var TweenMax = require("gsap");
+
+
 var Particle = require("./Particle");
 var Flower = require("./Flower");
 var Row = require("./Row");
@@ -59,7 +62,9 @@ var Summer = function  () {
 		width = window.innerWidth;
 		height = window.innerHeight;
 		renderer.resize(width, height);
-		
+
+		mouseClick();
+
 	}
 
 	function init () {
@@ -72,9 +77,23 @@ var Summer = function  () {
   	}
 		animate();
 
-		mouseElement = new Repeller();
-	  body.addEventListener("click", mouseClick, true);
+		TweenLite.to(body.querySelector(".invitation-logo") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.5});
+		TweenLite.to(body.querySelector(".invitation-text h4") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.6});
+		TweenLite.to(body.querySelector(".invitation-lines") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.6});
+		TweenLite.to(body.querySelector(".invitation-text h2") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.7});
+		TweenLite.to(body.querySelector(".invitation-text p") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.87});
 
+		TweenLite.to(body.querySelector(".invitation-line-one .invitation-line__inner") , 0.25, {x: "0%", delay: 0.6, ease:Sine.easeOut});
+		TweenLite.to(body.querySelector(".invitation-line-two .invitation-line__inner") , 0.25, {x: "0%", delay: 0.6, ease:Sine.easeOut});
+		TweenLite.to(body.querySelector(".invitation-line-one .invitation-line__circle") , 0.25, {x: "1200%", delay: 0.6, ease:Sine.easeOut});
+		TweenLite.to(body.querySelector(".invitation-line-two .invitation-line__circle") , 0.25, {x: "-1100%", delay: 0.6, onComplete: function () {
+
+	 	 	body.addEventListener("click", mouseClick, false);			
+
+		}});
+
+	  body.addEventListener("mousemove", mouseMove, false);
+		mouseElement = new Repeller();
 	}
 
   // Creating Elements
@@ -213,7 +232,6 @@ function mouseClick(e) {
 
 
   	for (var n = 0; n < flowerTextures.length; n++) {
-
   		flowers[n].addTexture(flowerTextures[n], flowerSizes[n]);
   	}
 
@@ -248,8 +266,6 @@ function mouseClick(e) {
 
 	function animate() {
 
-	renderer.resize(width, height);
-
 	  for (var i = 0; i < totalFlower; i++) {
 
 			flowers[i].applyForce( createFriction(flowers[i].velocity) );
@@ -261,13 +277,11 @@ function mouseClick(e) {
 	    flowers[i].display();
 	  }
 
-	  newAngle += -0.001;
+	  newAngle += -0.002;
 
     renderer.render(stage);
     requestAnimationFrame(animate);
 
-
-	
 	}
 
 	return {

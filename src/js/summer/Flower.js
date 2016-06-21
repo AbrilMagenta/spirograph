@@ -7,12 +7,10 @@ function Flower (initLocation, newRange, image) {
   var height = window.innerHeight;
 
 
-
   var texture = PIXI.Texture.fromImage("assets/img/flowers/" + image +".png");
-  var newTexture = texture;
-
-  // Declaraciones para el objeto de Pixi
+  var newTexture = texture
   var radius = newRange;
+  var newRadius = radius;
 
   this.element = new PIXI.Sprite(texture);
   this.element.anchor.x = 0.5;
@@ -29,17 +27,19 @@ function Flower (initLocation, newRange, image) {
   this.location = initLocation;
   this.velocity = [0,0];
 
-  function _addTexture( image, newSize ) {
 
-    newTexture = PIXI.Texture.fromImage("assets/img/flowers/" + image + ".png");
+  function _addTexture( newImage, newSize ) {
 
-    this.element.setTexture(newTexture);
-    this.element.width = newSize * 50;
-    this.element.height = newSize * 50;
-
+    newRadius = newImage === 10 ? 0.5 : newSize;
 
     this.element.anchor.x = 0.5;
     this.element.anchor.y = 0.5;
+    this.element.width = newRadius * 50;
+    this.element.height = newRadius * 50;
+
+    newTexture = PIXI.Texture.fromImage("assets/img/flowers/" + newImage +".png");
+
+    this.element.setTexture(newTexture);
   }
 
   // Funciones del objeto particula
