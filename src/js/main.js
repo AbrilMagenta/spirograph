@@ -5,6 +5,7 @@ var summer = new Summer();
 
 
 $(function() {
+
 	summer.init();
 });
 

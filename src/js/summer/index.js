@@ -33,7 +33,9 @@ var Summer = function  () {
   var flowersPerRow = Math.floor((Math.random() * 30) + 10);
   var totalRows = Math.floor((Math.random() * 4) + 3);
 
-  var rowsRadiusStart = 160;
+  var rowsRadiusStart = width < 650 ? 70 : 160;
+  var allRowsStart = width < 650 ? 100 : rowsRadiusStart - 30;
+
 
   var flower;
   var flowers = [];
@@ -54,13 +56,20 @@ var Summer = function  () {
   var flowerImages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   var flowerImagesUsed = [];
 
+  var rotationVelocity = -0.001;
+
 	shuffleFlowers(flowerImages);
 
+	var timer = setInterval(function(){ myTimer() }, 9000);
 
 	window.onresize = function (event){
 
 		width = window.innerWidth;
 		height = window.innerHeight;
+
+		rowsRadiusStart = width < 650 ? 70 : 160;
+		allRowsStart = width > 650 ? rowsRadiusStart - 30 : 100;
+		allRowsStart = 100;
 		renderer.resize(width, height);
 
 		mouseClick();
@@ -79,22 +88,25 @@ var Summer = function  () {
 
 		TweenLite.to(body.querySelector(".invitation-logo") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.5});
 		TweenLite.to(body.querySelector(".invitation-text h4") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.6});
-		TweenLite.to(body.querySelector(".invitation-lines") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.6});
 		TweenLite.to(body.querySelector(".invitation-text h2") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.7});
-		TweenLite.to(body.querySelector(".invitation-text p") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.87});
-
-		TweenLite.to(body.querySelector(".invitation-line-one .invitation-line__inner") , 0.25, {x: "0%", delay: 0.6, ease:Sine.easeOut});
-		TweenLite.to(body.querySelector(".invitation-line-two .invitation-line__inner") , 0.25, {x: "0%", delay: 0.6, ease:Sine.easeOut});
-		TweenLite.to(body.querySelector(".invitation-line-one .invitation-line__circle") , 0.25, {x: "1200%", delay: 0.6, ease:Sine.easeOut});
-		TweenLite.to(body.querySelector(".invitation-line-two .invitation-line__circle") , 0.25, {x: "-1100%", delay: 0.6, onComplete: function () {
-
-	 	 	body.addEventListener("click", mouseClick, false);			
+		TweenLite.to(body.querySelector(".invitation-text p") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.87, onComplete: function () {
+			
+			body.addEventListener("click", mouseClick, false);		
 
 		}});
+	
 
 	  body.addEventListener("mousemove", mouseMove, false);
 		mouseElement = new Repeller();
 	}
+
+function myTimer() {
+    var d = new Date();
+    var t = d.toLocaleTimeString();
+			
+		transform();
+}
+
 
   // Creating Elements
 
@@ -124,7 +136,7 @@ var Summer = function  () {
 		for (var i = 0; i < flowersPerRow; i++) {
 		  	
  		  row = new Row(i);
-	  	row.createLocations(rowsRadiusStart + (rowIndex * (rowsRadiusStart - 30)), angle)
+	  	row.createLocations(rowsRadiusStart + (rowIndex * (allRowsStart)), angle)
 	  	rows.push(row);
 
 			angle += 2 * Math.PI / flowersPerRow;
@@ -179,7 +191,7 @@ var Summer = function  () {
 
 		return newflowerArray;
   }
-
+	
 	function shuffleFlowers(a) {
 	
 		var j, x, i;
@@ -191,8 +203,14 @@ var Summer = function  () {
 	    }
 	}
 
+  function mouseClick(e) {
 
-function mouseClick(e) {
+  		clearTimeout(timer);
+  		transform();
+  		timer = setInterval(function(){ myTimer() }, 9000);
+  }
+
+function transform(e) {
 
   	minimalSize = 0.5;
   	lastMinSize = 0.5;
@@ -242,6 +260,18 @@ function mouseClick(e) {
 
 	function mouseMove( e ) {
 		
+
+		if (e.x > width / 2 ) {
+
+			rotationVelocity = -0.001;
+
+		} else {
+
+			rotationVelocity = 0.001;
+
+
+		}
+
 		mouseElement.setNewLocation(e.x, e.y);
 
 	  for (var i = 0; i < totalFlower; i++) {
@@ -277,7 +307,7 @@ function mouseClick(e) {
 	    flowers[i].display();
 	  }
 
-	  newAngle += -0.002;
+	  newAngle += rotationVelocity;
 
     renderer.render(stage);
     requestAnimationFrame(animate);

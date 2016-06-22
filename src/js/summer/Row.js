@@ -13,7 +13,7 @@ function Row ( index ) {
 
 	// Universal gravitational constant
 	var G = 0.4;
-	var mass = 200;
+	var mass = 135;
 	this.location = [];
 
 	function _createLocations (newRadius, newTheta) {

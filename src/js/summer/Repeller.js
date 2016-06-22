@@ -4,7 +4,7 @@ function Repeller () {
 	var width = window.innerWidth;
   	var height = window.innerHeight;
 
-  	var strenght = 1;
+  	var strenght = 100;
 	this.location = [];
 
 	function _setNewLocation ( x, y ) {
@@ -24,7 +24,7 @@ function Repeller () {
 		dir = [dir[0] / d, dir[1] / d];
 
 		// Constrain	
-		d = Math.min(Math.max(parseInt(d), 2), 3);
+		d = Math.min(Math.max(parseInt(d), 7), 30);
 
 		var force = -1 * strenght / ( d * d );
 		dir = [ dir[0] * force, dir[1] * force ] 

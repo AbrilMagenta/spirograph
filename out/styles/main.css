@@ -16,11 +16,13 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 100% !important;
+  height: 100% !important;
   transform: translate(-50%, -50%);
 }
 .invitation-logo {
   position: relative;
-  width: 60px;
+  width: 45px;
   margin: 0 auto 20px;
   opacity: 0;
   transform: translateY(50%);
@@ -41,16 +43,29 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #7c23c9;
-  opacity: 0.75;
+  background: #6400fe;
+  opacity: 0.8;
+}
+.invitation-overlay:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: -webkit-linear-gradient(transparent, #6400fe);
+  background: -o-linear-gradient(transparent, #6400fe);
+  background: -moz-linear-gradient(transparent, #6400fe);
+  background: linear-gradient(transparent, #6400fe);
+  opacity: 0.5;
 }
 .invitation-text {
   position: relative;
   top: 50%;
   margin: 0 auto;
   width: 70%;
-  max-width: 680px;
+  max-width: 760px;
   transform: translateY(-50%);
+  z-index: 1;
 }
 @media (max-width: 1024px) {
   .invitation-text {
@@ -65,7 +80,7 @@ body {
   font-size: 13px;
   color: #fff;
   font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   line-height: 2.3;
   text-transform: uppercase;
   text-align: center;
@@ -86,9 +101,9 @@ body {
 }
 .invitation-text h2 {
   position: relative;
-  margin-top: 5%;
+  margin-top: 4.5%;
   font-family: 'Raleway';
-  font-size: 68px;
+  font-size: 76px;
   color: #fff;
   font-weight: 600;
   text-align: center;
@@ -102,19 +117,20 @@ body {
 }
 @media (max-width: 760px) {
   .invitation-text h2 {
-    font-size: 30px;
+    font-size: 55px;
   }
 }
 @media (max-width: 641px) {
   .invitation-text h2 {
-    font-size: 25px;
+    font-size: 30px;
   }
 }
 .invitation-text p {
-  margin: 45px auto 0;
+  margin: 23px auto 0;
   width: 80%;
+  max-width: 551px;
   font-family: 'Raleway';
-  font-size: 15px;
+  font-size: 19px;
   color: #fff;
   font-weight: 400;
   line-height: 1.6;
@@ -128,54 +144,13 @@ body {
     font-size: 13px;
   }
 }
-.invitation-text span {
+.invitation-text a {
+  color: #fff;
+  text-decoration: none;
   font-weight: 600;
 }
-.invitation-lines {
-  position: relative;
-  width: 100%;
-  margin-top: 13px;
-  opacity: 0;
-}
-.invitation-line {
-  width: 51%;
-  height: 20px;
-  overflow: hidden;
-}
-.invitation-line__inner {
-  position: relative;
-  top: 6px;
-  width: 100%;
-  height: 1px;
-  background-color: #fff;
-}
-.invitation-line__circle {
-  position: absolute;
-  top: 0;
-  width: 10px;
-  height: 10px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-}
-.invitation-line-one {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.invitation-line-one .invitation-line__inner {
-  transform: translateX(50%);
-}
-.invitation-line-one .invitation-line__circle {
-  right: 50%;
-}
-.invitation-line-two {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.invitation-line-two .invitation-line__inner {
-  transform: translateX(-50%);
-}
-.invitation-line-two .invitation-line__circle {
-  right: 50%;
+.invitation-text span {
+  display: block;
+  margin-top: 5px;
+  font-weight: 600;
 }
