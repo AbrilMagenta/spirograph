@@ -1,9 +1,7 @@
 @import 'queries'
-@import 'fonts'
 @import 'base'
 
 /*MODULES*/
-
 body
 	
 	overflow hidden
@@ -52,6 +50,7 @@ body
 		opacity 0.8
 		
 	&:after
+		
 		content ""
 		position absolute
 		
@@ -92,9 +91,9 @@ body
 		width 61%
 			
 		font-family 'Raleway'
-		font-size 13px
+		font-size 14px
 		color white
-		font-weight 700
+		font-weight 600
 		letter-spacing 3px
 		line-height 2.3
 
@@ -120,7 +119,7 @@ body
 		margin-top 4.5%
 
 		font-family 'Raleway'
-		font-size 76px
+		font-size 136px
 		color white
 		font-weight 600
 
@@ -132,18 +131,18 @@ body
 
 		+q-v-large()
 		
-			font-size 55px
+			font-size 86px
 			
 		+q-large()
 			
-			font-size 55px
+			font-size 73px
 			
 		+q-medium()
 
-			font-size 30px
+			font-size 57px
 	p
 		
-		margin 23px auto 0
+		margin 46px auto 0
 		
 		width 80%
 		max-width 551px
@@ -164,6 +163,10 @@ body
 		
 			width 90%
 			font-size 13px
+			
+		+q-medium()
+
+			margin 26px auto 0
 	
 	a
 		

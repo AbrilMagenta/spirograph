@@ -30,11 +30,7 @@ function Row ( index ) {
 		x = radius * Math.sin(theta + newTheta) + (width / 2);
      	y =  radius * Math.cos(theta + newTheta) + (height / 2);
    		this.location = [x, y];
-
-
 	}
-
-
 
 	function _attract ( element ) {
 
@@ -51,7 +47,6 @@ function Row ( index ) {
 
 	return {
 
-		// element : _element,
 		attract : _attract,
 		createLocations: _createLocations,
 		rotate : _rotate

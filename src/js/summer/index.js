@@ -1,324 +1,320 @@
 var PIXI = require("pixi");
 var TweenMax = require("gsap");
 
-
-var Particle = require("./Particle");
 var Flower = require("./Flower");
 var Row = require("./Row");
 var Repeller = require("./Repeller");
 
-// As learned in The nature of code by Daniel Shiffman
+// Midsummer invitation with physics
 // by Abril Alvarez
+
 var Summer = function  () {
-	var renderer;
-	var rendererElement;
 
-	var stage;
-	var body = document.querySelector("body");
-	
-	// Window Values
-	var width = window.innerWidth;
-	var height = window.innerHeight;
-	var ratio = width / height;
+  var renderer;
+  var rendererElement;
 
-	// Values of the spirograph
-	var newAngle = 0;
-  var mouseElement;
+  var stage;
+  var body = document.querySelector("body");
+  
+  // Window Values
+  var width = window.innerWidth;
+  var height = window.innerHeight;
 
-	// Values of flowers
-	var allRows = [];
-	var rows = [];
-  var row;
-
+  // Values of flowers and rows
   var flowersPerRow = Math.floor((Math.random() * 30) + 10);
   var totalRows = Math.floor((Math.random() * 4) + 3);
+
+  var totalFlower = totalRows * flowersPerRow; 
+  var lastTotalFlowers = totalFlower;
 
   var rowsRadiusStart = width < 650 ? 70 : 160;
   var allRowsStart = width < 650 ? 100 : rowsRadiusStart - 30;
 
+  var allRows = [];
+  var rows = [];
+  var row;
 
   var flower;
   var flowers = [];
   var flowerTextures = [];
   var flowerSizes = [];
 
-  var totalFlower = totalRows * flowersPerRow; 
-  var lastTotalFlowers = totalFlower;
-
-	var minimalSize = 0.5;
+  var minimalSize = 0.5;
   var lastMinSize = 0.5;
 
-  // Values of forces
-
-  var friction = [];
-  var tick = 1;
-
+  // Flower Images
   var flowerImages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   var flowerImagesUsed = [];
 
+  shuffleFlowers(flowerImages);
+
+  // Values of forces and iterval
+  var friction = [];
+  var tick = 1;
+  var newAngle = 0;
   var rotationVelocity = -0.001;
+  var timer = setInterval(function(){ myTimer() }, 9000);
 
-	shuffleFlowers(flowerImages);
 
-	var timer = setInterval(function(){ myTimer() }, 9000);
+  // Values of the spirograph
+  var mouseElement;
 
-	window.onresize = function (event){
+  window.onresize = function (event){
 
-		width = window.innerWidth;
-		height = window.innerHeight;
+    width = window.innerWidth;
+    height = window.innerHeight;
 
-		rowsRadiusStart = width < 650 ? 70 : 160;
-		allRowsStart = width > 650 ? rowsRadiusStart - 30 : 100;
-		allRowsStart = 100;
-		renderer.resize(width, height);
+    rowsRadiusStart = width < 650 ? 70 : 160;
+    allRowsStart = width > 650 ? rowsRadiusStart - 10 : 100;
+    allRowsStart = 100;
+    renderer.resize(width, height);
 
-		mouseClick();
+    mouseClick();
 
-	}
+  }
 
-	function init () {
+  function init () {
 
-	  createStage();
-		createRows();
+    createStage();
+    createRows();
 
-		for (var i = 0; i < totalFlower; i++) {
-			createFlowers(i);
-  	}
-		animate();
+    for (var i = 0; i < totalFlower; i++) {
+      createFlowers(i);
+    }
 
-		TweenLite.to(body.querySelector(".invitation-logo") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.5});
-		TweenLite.to(body.querySelector(".invitation-text h4") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.6});
-		TweenLite.to(body.querySelector(".invitation-text h2") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.7});
-		TweenLite.to(body.querySelector(".invitation-text p") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.87, onComplete: function () {
-			
-			body.addEventListener("click", mouseClick, false);		
+    animate();
 
-		}});
-	
+    TweenLite.to(body.querySelector(".invitation-logo") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.5});
+    TweenLite.to(body.querySelector(".invitation-text h4") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.6});
+    TweenLite.to(body.querySelector(".invitation-text h2") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.7});
+    TweenLite.to(body.querySelector(".invitation-text p") , 0.4, {opacity: 1, y: 0, ease:Sine.easeOut, delay: 0.87, onComplete: function () {
+      
+      body.addEventListener("click", mouseClick, false);    
 
-	  body.addEventListener("mousemove", mouseMove, false);
-		mouseElement = new Repeller();
-	}
+    }});
+  
+    body.addEventListener("mousemove", mouseMove, false);
+    mouseElement = new Repeller();
 
-function myTimer() {
+  }
+
+  function myTimer() {
+    
     var d = new Date();
     var t = d.toLocaleTimeString();
-			
-		transform();
-}
-
+      
+    transform();
+  }
 
   // Creating Elements
-
-	function createStage () {
-		
-  	renderer = PIXI.autoDetectRenderer(width, height, null, true);
-		renderElement = document.body.appendChild(renderer.view);
-		renderElement.setAttribute("id", "summer");
-		stage = new PIXI.Stage();
-	}
+  function createStage () {
+    
+    renderer = PIXI.autoDetectRenderer(width, height, null, true);
+    renderElement = document.body.appendChild(renderer.view);
+    renderElement.setAttribute("id", "summer");
+    stage = new PIXI.Stage();
+  }
 
   function createRows() {
-			
-		for (var m = 1; m < totalRows + 1; m++) {
+      
+    for (var m = 1; m < totalRows + 1; m++) {
+      
+      minimalSize = lastMinSize;
+      allRows.push(createRow(m));
+      createFlowerTexture(sortFlowers());
+      lastMinSize = 0.7 * m;
 
-	 		minimalSize = lastMinSize;
-			allRows.push(createRow(m));
-	 		createFlowerTexture(sortFlowers());
-			lastMinSize = 0.7 * m;
-		}
-	}
+    }
+  }
 
   function createRow(rowIndex) {
-  		
-  	var angle = 0;
+      
+    var angle = 0;
 
-		for (var i = 0; i < flowersPerRow; i++) {
-		  	
- 		  row = new Row(i);
-	  	row.createLocations(rowsRadiusStart + (rowIndex * (allRowsStart)), angle)
-	  	rows.push(row);
+    for (var i = 0; i < flowersPerRow; i++) {
+        
+      row = new Row(i);
+      row.createLocations(rowsRadiusStart + (rowIndex * (allRowsStart)), angle)
+      rows.push(row);
 
-			angle += 2 * Math.PI / flowersPerRow;
-		}
+      angle += 2 * Math.PI / flowersPerRow;
+    }
   }
 
   function createFlowerTexture(setflowerArray) {
-  	
-   	var flowerP = null;
+    
+    var flowerP = null;
 
-  	for (var i = 0; i < flowersPerRow; i++) {
+    for (var i = 0; i < flowersPerRow; i++) {
 
-  		if (flowerP > setflowerArray.length - 2) {
+      if (flowerP > setflowerArray.length - 2) {
 
-  			flowerP = 0;
+        flowerP = 0;
 
-  		} else {
+      } else {
 
-  			flowerP = flowerP + 1;
-
-  		}
-			
-			flowerSizes.push(minimalSize + flowerP);
-			flowerTextures.push(setflowerArray[flowerP]);
-		}
+        flowerP = flowerP + 1;
+      }
+      
+      flowerSizes.push(minimalSize + flowerP);
+      flowerTextures.push(setflowerArray[flowerP]);
+    }
   }
 
-
   function createFlowers(index) {
-		
-		flower = new Flower([ width / 2, height / 2 ], flowerSizes[index], flowerTextures[index]);
-		stage.addChild(flower.element);
-  	flowers.push(flower);
+    
+    flower = new Flower([ width / 2, height / 2 ], flowerSizes[index], flowerTextures[index]);
+    stage.addChild(flower.element);
+    flowers.push(flower);
 
-	 }
+  }
 
   function sortFlowers() {
 
-  	var newflowerArray;
+    var newflowerArray;
 
-		if (flowerImages.length < 1) {
+    if (flowerImages.length < 1) {
 
-			flowerImages = flowerImagesUsed;
-			flowerImagesUsed = [];
-		}
-			
-		newflowerArray = flowerImages.splice(0, (Math.random() * 2) + 2);
+      flowerImages = flowerImagesUsed;
+      flowerImagesUsed = [];
+    }
+      
+    newflowerArray = flowerImages.splice(0, (Math.random() * 2) + 2);
 
-		for (var i = 0; i < newflowerArray.length; i++) {
-			flowerImagesUsed.push(newflowerArray[i]);
-		}
+    for (var i = 0; i < newflowerArray.length; i++) {
+      flowerImagesUsed.push(newflowerArray[i]);
+    }
 
-		return newflowerArray;
+    return newflowerArray;
+  
   }
-	
-	function shuffleFlowers(a) {
-	
-		var j, x, i;
-	    for (i = a.length; i; i -= 1) {
-	        j = Math.floor(Math.random() * i);
-	        x = a[i - 1];
-	        a[i - 1] = a[j];
-	        a[j] = x;
-	    }
-	}
+  
+  function shuffleFlowers(a) {
+  
+    var j, x, i;
+      for (i = a.length; i; i -= 1) {
+          j = Math.floor(Math.random() * i);
+          x = a[i - 1];
+          a[i - 1] = a[j];
+          a[j] = x;
+      }
+  }
+
+  function transform(e) {
+
+    minimalSize = 0.5;
+    lastMinSize = 0.5;
+
+    flowersPerRow = Math.floor((Math.random() * 30) + 10);
+    totalRows = Math.floor((Math.random() * 4) + 3);
+    totalFlower = totalRows * flowersPerRow; 
+
+    allRows = [];
+    rows = [];
+    flowerTextures = [];
+    flowerSizes = [];
+
+    createRows();
+
+    if (totalFlower >= lastTotalFlowers) {
+
+      for (var i = 0; i < totalFlower - lastTotalFlowers; i++) {
+ 
+        createFlowers(i);
+
+      }
+
+    } else {
+
+      var totalToRemove = lastTotalFlowers - totalFlower;
+
+      for (var w = 0; w < totalToRemove; w++) {
+
+        stage.removeChild(flowers[(lastTotalFlowers - 1) - w].element);
+      
+      }
+
+      flowers.splice(flowers.length - totalToRemove, totalToRemove );
+  
+    }
+
+
+    for (var n = 0; n < flowerTextures.length; n++) {
+      flowers[n].addTexture(flowerTextures[n], flowerSizes[n]);
+    }
+
+
+    lastTotalFlowers = totalFlower;
+  
+  }
+
+  // Events
 
   function mouseClick(e) {
 
-  		clearTimeout(timer);
-  		transform();
-  		timer = setInterval(function(){ myTimer() }, 9000);
+      clearTimeout(timer);
+      transform();
+      timer = setInterval(function(){ myTimer() }, 9000);
   }
 
-function transform(e) {
+  function mouseMove( e ) {
+    
+    if (e.x > width / 2 ) {
 
-  	minimalSize = 0.5;
-  	lastMinSize = 0.5;
+      rotationVelocity = -0.001;
 
-  	flowersPerRow = Math.floor((Math.random() * 30) + 10);
-  	totalRows = Math.floor((Math.random() * 4) + 3);
-  	totalFlower = totalRows * flowersPerRow; 
+    } else {
 
-		allRows = [];
-  	rows = [];
-  	flowerTextures = [];
-  	flowerSizes = [];
+      rotationVelocity = 0.001;
+    }
 
-  	createRows();
+    mouseElement.setNewLocation(e.x, e.y);
 
-  	if (totalFlower >= lastTotalFlowers) {
+    for (var i = 0; i < totalFlower; i++) {
 
-  		for (var i = 0; i < totalFlower - lastTotalFlowers; i++) {
- 
-  			createFlowers(i);
+      flowers[i].applyForce( mouseElement.repell(rows[i]));
 
-  		}
-
-  	} else {
-
-  		var totalToRemove = lastTotalFlowers - totalFlower;
-
-  		for (var w = 0; w < totalToRemove; w++) {
-
-  			stage.removeChild(flowers[(lastTotalFlowers - 1) - w].element);
-  		
-  		}
-
-  		flowers.splice(flowers.length - totalToRemove, totalToRemove );
-  
-  	}
-
-
-  	for (var n = 0; n < flowerTextures.length; n++) {
-  		flowers[n].addTexture(flowerTextures[n], flowerSizes[n]);
-  	}
-
-
-  	lastTotalFlowers = totalFlower;
-	
-	}
-
-	function mouseMove( e ) {
-		
-
-		if (e.x > width / 2 ) {
-
-			rotationVelocity = -0.001;
-
-		} else {
-
-			rotationVelocity = 0.001;
-
-
-		}
-
-		mouseElement.setNewLocation(e.x, e.y);
-
-	  for (var i = 0; i < totalFlower; i++) {
-
-	    flowers[i].applyForce( mouseElement.repell(rows[i]));
-
-	  }
+    }
   }
 
   // Create Other Forces
 
-	 function createFriction ( velocity ) {
-		  	
-		 var c = 0.01;
-		 var normal = 10;
+   function createFriction ( velocity ) {
+        
+     var c = 0.01;
+     var normal = 10;
 
-		friction = [velocity[0] * (-1), velocity[1] * (-1)];
-		friction = [friction[0] * (c * normal), friction[1] * (c * normal)];
+    friction = [velocity[0] * (-1), velocity[1] * (-1)];
+    friction = [friction[0] * (c * normal), friction[1] * (c * normal)];
 
-		return friction;
-		}
+    return friction;
+  
+  }
 
-	function animate() {
+  function animate() {
 
-	  for (var i = 0; i < totalFlower; i++) {
+    for (var i = 0; i < totalFlower; i++) {
 
-			flowers[i].applyForce( createFriction(flowers[i].velocity) );
-	    flowers[i].applyForce( rows[i].attract( flowers[i]) );
-			
-			rows[i].rotate(newAngle);
+      flowers[i].applyForce( createFriction(flowers[i].velocity) );
+      flowers[i].applyForce( rows[i].attract( flowers[i]) );
+      
+      rows[i].rotate(newAngle);
 
-			flowers[i].update();
-	    flowers[i].display();
-	  }
+      flowers[i].update();
+      flowers[i].display();
+    }
 
-	  newAngle += rotationVelocity;
-
+    newAngle += rotationVelocity;
     renderer.render(stage);
     requestAnimationFrame(animate);
 
-	}
+  }
 
-	return {
+  return {
 
-		init: init
+    init: init
 
-	}
+  }
 }
 
 module.exports = Summer;

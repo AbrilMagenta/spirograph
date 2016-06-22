@@ -77,9 +77,9 @@ body {
   margin: 0 auto;
   width: 61%;
   font-family: 'Raleway';
-  font-size: 13px;
+  font-size: 14px;
   color: #fff;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 3px;
   line-height: 2.3;
   text-transform: uppercase;
@@ -103,7 +103,7 @@ body {
   position: relative;
   margin-top: 4.5%;
   font-family: 'Raleway';
-  font-size: 76px;
+  font-size: 136px;
   color: #fff;
   font-weight: 600;
   text-align: center;
@@ -112,21 +112,21 @@ body {
 }
 @media (max-width: 1024px) {
   .invitation-text h2 {
-    font-size: 55px;
+    font-size: 86px;
   }
 }
 @media (max-width: 760px) {
   .invitation-text h2 {
-    font-size: 55px;
+    font-size: 73px;
   }
 }
 @media (max-width: 641px) {
   .invitation-text h2 {
-    font-size: 30px;
+    font-size: 57px;
   }
 }
 .invitation-text p {
-  margin: 23px auto 0;
+  margin: 46px auto 0;
   width: 80%;
   max-width: 551px;
   font-family: 'Raleway';
@@ -142,6 +142,11 @@ body {
   .invitation-text p {
     width: 90%;
     font-size: 13px;
+  }
+}
+@media (max-width: 641px) {
+  .invitation-text p {
+    margin: 26px auto 0;
   }
 }
 .invitation-text a {
